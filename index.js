@@ -2,15 +2,28 @@ const fs = require('fs');
 const puppeteer = require('puppeteer');
 const { parse } = require('node-html-parser');
 const URL = require('url').URL;
+const ipc = require('node-ipc');	   
 
 const version = '1.0.0';
 const saveFolder = __dirname + '/Saves/';
 
-async function onDetectChange(page) {
+const connectToContactor = () => {
+    ipc.config.id = 'web-change-listener';
+    ipc.config.retry = 1500;
+    ipc.config.silent = true;
+    ipc.connectTo('contactor', () => {
+        ipc.of.contactor.on('connect', () => {
+            console.log('Connected to contactor');
+        });
+    });
+};
+
+const onDetectChange = (page) => {
+    ipc.of.contactor.emit('alert', "[WebChangeListener] - Change detected on: " + page);
     console.log('change detected on: ' + page);
 }
 
-async function getLinks(page, visited, hostname) {
+const getLinks = async(page, visited, hostname) => {
     let links = await page.$$eval('a', as => as.map(a => a.href));
 
     const mainUrl = page.url();
@@ -21,7 +34,7 @@ async function getLinks(page, visited, hostname) {
     });
 }
 
-async function exploreWebsite(page, url, visited, hostname, pagesExcludedFromCheck = [], selectorsExcludedFromCheck = {}) {
+const exploreWebsite = async(page, url, visited, hostname, pagesExcludedFromCheck = [], selectorsExcludedFromCheck = {}) => {
     if (visited.has(url.toString())) {
         return 0;
     }
@@ -136,6 +149,8 @@ const scrap = async (browser, targetUrl, pagesExcludedFromCheck, selectorsExclud
                 i++;
             }
         }
+
+        connectToContactor();
         
         console.log("Scraping " + targetUrl.toString() + (interval == 0 ? " once:" : " every " + interval + "ms:"));
         console.log("Excluded pages: " + pagesExcludedFromCheck);
@@ -158,7 +173,7 @@ const scrap = async (browser, targetUrl, pagesExcludedFromCheck, selectorsExclud
         else {
             await scrap(browser, targetUrl, pagesExcludedFromCheck, selectorsExcludedFromCheck);
             setInterval(async () => {
-                await scrap(browser, targetUrl, pagesExcludedFromCheck);
+                await scrap(browser, targetUrl, pagesExcludedFromCheck, selectorsExcludedFromCheck);
             }
             , interval);
         }

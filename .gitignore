@@ -1,2 +1,4 @@
 /Saves
 /data
+.env
+/node_modules
