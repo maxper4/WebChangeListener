@@ -11,7 +11,7 @@ const connectToContactor = () => {
     ipc.config.id = 'web-change-listener';
     ipc.config.retry = 1500;
     ipc.config.silent = true;
-    ipc.connectTo('contactor', () => {
+    ipc.connectToNet('contactor', () => {
         ipc.of.contactor.on('connect', () => {
             console.log('Connected to contactor');
         });
