@@ -180,7 +180,7 @@ const scrap = async (browser, targetUrl, pagesExcludedFromCheck, selectorsExclud
     }
     else {
         console.log("Usage: node index.js <url> [--interval=<interval>] [--exclude-page=<url>] [--exclude-selector=<url> <selector>]");
-        console.log("Example: node index.js https://www.ethcc.io/ 60000 --exclude-page=https://www.ethcc.io/ --exclude-selector=https://www.ethcc.io/ .css-gu522k --exclude-selector=https://www.ethcc.io/ 'head > script' --exclude-selector=https://www.ethcc.io/ '.css-j5sp9m .gm-style > div'");
+        console.log("Example: node index.js https://www.ethcc.io/ --interval=60000 --exclude-page=https://www.ethcc.io/ --exclude-selector=https://www.ethcc.io/ .css-gu522k --exclude-selector=https://www.ethcc.io/ 'head > script' --exclude-selector=https://www.ethcc.io/ '.css-j5sp9m .gm-style > div'");
         process.exit(1);
     }
 })();
