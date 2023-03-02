@@ -6,9 +6,10 @@ const ipc = require('node-ipc');
 
 const version = '1.0.0';
 const saveFolder = __dirname + '/Saves/';
+const BOT_ID = 'web-change-listener';
 
 const connectToContactor = () => {
-    ipc.config.id = 'web-change-listener';
+    ipc.config.id = BOT_ID;
     ipc.config.retry = 1500;
     ipc.config.silent = true;
     ipc.connectToNet('contactor', () => {
@@ -19,7 +20,7 @@ const connectToContactor = () => {
 };
 
 const onDetectChange = (page) => {
-    ipc.of.contactor.emit('alert', "[WebChangeListener] - Change detected on: " + page);
+    ipc.of.contactor.emit('alert', JSON.stringify({ id: BOT_ID, message: "[WebChangeListener] - Change detected on: " + page}));
     console.log('change detected on: ' + page);
 }
 
